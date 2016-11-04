@@ -1,20 +1,15 @@
 """generate.py
 offline audio oracle / factor oracle generation routines for vmo
-
 Copyright (C) 12.02.2013 Greg Surges, Cheng-i Wang
-
 This file is part of vmo.
-
 vmo is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 vmo is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with vmo.  If not, see <http://www.gnu.org/licenses/>.
 """
@@ -27,7 +22,6 @@ from scipy.io import wavfile
 
 def improvise_step(oracle, i, lrs=0, weight=None, prune=False):
     """ Given the current time step, improvise (generate) the next time step based on the oracle structure.
-
     :param oracle: an indexed vmo object
     :param i: current improvisation time step
     :param lrs: the length of minimum longest repeated suffixes allowed to jump
@@ -66,7 +60,6 @@ def improvise_step(oracle, i, lrs=0, weight=None, prune=False):
 
 def improvise(oracle, seq_len, k=1, LRS=0, weight=None, continuity=1):
     """ Given an oracle and length, generate an improvised sequence of the given length.
-
     :param oracle: an indexed vmo object
     :param seq_len: the length of the returned improvisation sequence
     :param k: the starting improvisation time step in oracle
@@ -101,7 +94,6 @@ def improvise(oracle, seq_len, k=1, LRS=0, weight=None, continuity=1):
 
 def generate(oracle, seq_len, p=0.5, k=1, LRS=0, weight=None):
     """ Generate a sequence based on traversing an oracle.
-
     :param oracle: a indexed vmo object
     :param seq_len: the length of the returned improvisation sequence
     :param p: a float between (0,1) representing the probability using the forward links.
@@ -220,7 +212,6 @@ def _find_links(k_vec, sfx, rsfx, k):
 
 def _make_win(n, mono=False):
     """ Generate a window for a given length.
-
     :param n: an integer for the length of the window.
     :param mono: True for a mono window, False for a stereo window.
     :return: an numpy array containing the window value.
@@ -236,7 +227,6 @@ def _make_win(n, mono=False):
 
 def audio_synthesis(ifilename, ofilename, s, analysis_sr=44100, buffer_size=8192, hop=4096):
     """
-
     :param ifilename: input audio file path.
     :param ofilename: output audio file path.
     :param s: frame sequence to be generated.
@@ -300,7 +290,6 @@ def generate_audio(ifilename, ofilename, oracle, seq_len,
                    analysis_sr=44100, buffer_size=8192, hop=4096,
                    p=0.5, k=0, lrs=0):
     """
-
     :param ifilename: input audio file path.
     :param ofilename: output audio file path.
     :param oracle: an oracle indexed on ifilename
@@ -364,3 +353,15 @@ def generate_audio(ifilename, ofilename, oracle, seq_len,
     x_new = x_new.astype(np.int16)
     wavfile.write(ofilename, fs, x_new)
     return x_new, wsum, fs
+
+
+def state_to_frame(path, beat_loc_list):
+    """
+    :param path: integer or a list, numpy array of intergers stands for the sequence that needs to be converted
+    :param beat_loc_list: the list containing beat or events locations
+    :return: reconstructed list by the beat or events
+    """
+
+    for i in range(len(path)-1):
+        beat_loc_list.append(range(path[i], path[i+1]))
+    return beat_loc_list
